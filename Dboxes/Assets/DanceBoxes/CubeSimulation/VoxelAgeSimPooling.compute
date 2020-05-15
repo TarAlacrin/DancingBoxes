@@ -1,0 +1,58 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#include "Assets/DanceBoxes/ComputeIncludes.cginc"
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+StructuredBuffer<float> RNewCubeAges;
+StructuredBuffer<float> ROldCubeAges;
+RWStructuredBuffer<float> WCubeAges;
+
+float _DeltaTime;
+
+
+float CheckCoordValid(int3 coords)
+{
+	float sizeCheck = ceil(saturate(coords.x - _Dimensions.x + 1) + saturate(coords.y - _Dimensions.y + 1) + saturate(coords.z - _Dimensions.z + 1));
+	sizeCheck += saturate(1 - coords.x) + saturate(1 - coords.y) + saturate(1 - coords.z);
+	return 1 - saturate(sizeCheck);//originally returned a bool of sizeCheck ==0;
+}
+
+float SafeGetOldAge(int3 coords)
+{
+	return ROldCubeAges[ClampedIndex(coords)];
+	//my testing showed that this method of getting safe old age was almost the same level of performance, however, because of branching if statements, I chose to go with the other.
+	//if (CheckCoordValid(coords) == 1f)
+	//	return ROldCubeAges[Index(coords)];
+	//else
+	//	return 0; 
+}
+
+float ageFromPooling(int3 coords)
+{
+	float age00 = SafeGetOldAge(coords + int3(-1, 0, -1));
+	float age10 = SafeGetOldAge(coords + int3(1, 0, -1));
+	float age01 = SafeGetOldAge(coords + int3(-1, 0, 1));
+	float age11 = SafeGetOldAge(coords + int3(1, 0, 1));
+
+	return max(age00, max(age10, max(age01, age11)));
+}
+
+
+[numthreads(THREADSIZE, 1, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+	uint index = Index(id);
+	int3 coords = Coord(index);
+	float newage = RNewCubeAges[index];
+
+	float oldage = SafeGetOldAge(coords);
+
+	int3 elevatedCoords = coords + int3(0, 1, 0);
+
+	float elevatedAge = SafeGetOldAge(elevatedCoords);
+
+	oldage = /*0.5*oldage + */ elevatedAge - _DeltaTime;//lerp(oldage, elevatedAge - _DeltaTime, 0.5);
+
+	WCubeAges[index] = saturate(saturate(oldage) + saturate(newage));
+}

@@ -1,0 +1,17 @@
+﻿// Each #kernel tells which fu nction to compile; you can have many kernels
+#pragma kernel CSMain
+#include "Assets/DanceBoxes/ComputeIncludes.cginc"
+
+RWStructuredBuffer<float> WVoxelAgeBuffer;
+ 
+
+[numthreads(THREADSIZE, 1, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    uint index = Index(id);
+    int3 coords = Coord(index);
+    float isinrange = cos(coords.x * 0.5 + coords.y) * saturate(0.5 + cos(coords.z * 0.6 + coords.x * 0.2)) * 10;
+    float sphere = saturate(_Dimensions.x * 0.4 - length(coords - _Dimensions.xyz * 0.5));
+    WVoxelAgeBuffer[index] = isinrange * sphere;
+}
+  
