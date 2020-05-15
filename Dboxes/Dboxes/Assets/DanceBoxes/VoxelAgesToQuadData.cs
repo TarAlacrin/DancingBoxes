@@ -29,7 +29,7 @@ namespace DanceBoxes
 		{
 			for(int i =0; i < quadDataBuffer.Length; i++)
 			{
-				quadDataBuffer[i] = new ComputeBuffer(DanceBoxManager.inst.totalVoxels * 6, DanceBoxManager.inst.sizeOfQuadData, ComputeBufferType.Append);
+				quadDataBuffer[i] = new ComputeBuffer(DanceBoxManager.inst.totalQuadsMax, DanceBoxManager.inst.sizeOfQuadData, ComputeBufferType.Append);
 			}
 			//quadDataBuffer[WRITE] = new ComputeBuffer(DanceBoxManager.inst.totalVoxels * 6, DanceBoxManager.inst.sizeOfQuadData, ComputeBufferType.Append);
 			cubeAgeToQuadDataShader.SetVector("_Dimensions", DanceBoxManager.inst.voxelDimensions4);
@@ -74,7 +74,7 @@ namespace DanceBoxes
 		void ClearBuffer(int index)
 		{
 			ClearComputeHandler.inst.ClearCompute(quadDataBuffer[index],
-			DanceBoxManager.inst.totalVoxelsThreadGroup * 6,
+			DanceBoxManager.inst.totalQuadsMaxThreadGroup,
 			1);
 		}
 

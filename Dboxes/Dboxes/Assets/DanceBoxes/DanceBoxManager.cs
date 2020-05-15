@@ -12,7 +12,7 @@ namespace DanceBoxes
 		public int singleDimensionCount = 64;
 
 		[Space]
-		private int threadGroupSize = 64;
+		private const int threadGroupSize = 64;
 		[Space]
 		public Transform sizeAdjuster = null;
 
@@ -62,6 +62,23 @@ namespace DanceBoxes
 			}
 		}
 
+		public int totalQuadsMax
+		{
+			get
+			{
+				return totalVoxels*3;
+			}
+		}
+
+		public int totalQuadsMaxThreadGroup
+		{
+			get
+			{
+				return GetThreadNumbers(totalQuadsMax,128);
+			}
+		}
+
+
 		public int sizeOfQuadData{
 			get{
 				return System.Runtime.InteropServices.Marshal.SizeOf<QuadData>();
@@ -89,17 +106,17 @@ namespace DanceBoxes
 			Time.captureFramerate = captureFrametime;
 		}
 
-		public int GetThreadNumbers(int inDesiredCount)
+		public int GetThreadNumbers(int inDesiredCount, int groupSize = threadGroupSize)
 		{
 
 			float countCalc = inDesiredCount;
-			countCalc /= (float)threadGroupSize;
+			countCalc /= (float)groupSize;
 			if (countCalc != Mathf.Round(countCalc))
 			{
 				Debug.LogError("HEY! IM TRYING TO INVOKE PART OF A THREADGROUP: " + countCalc + " IS THE NUMBER OF THREADGROUPS IM TRYING TO INVOKE");
 			}
 
-			return inDesiredCount / threadGroupSize;
+			return inDesiredCount / groupSize;
 		}
 
 	}
