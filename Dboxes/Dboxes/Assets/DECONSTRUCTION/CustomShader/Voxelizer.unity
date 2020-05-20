@@ -189,22 +189,8 @@ MonoBehaviour:
   m_ShowCustomSorter: 0
   breakBeforeColorGrading: 0
   m_BeforeTransparentBundles: []
-  m_BeforeStackBundles:
-  - assemblyQualifiedName: Kino.PostProcessing.Isoline, Kino.Postprocessing, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - assemblyQualifiedName: Kino.PostProcessing.PreStackOverlay, Kino.Postprocessing,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  - assemblyQualifiedName: Kino.PostProcessing.Recolor, Kino.Postprocessing, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - assemblyQualifiedName: Kino.PostProcessing.Streak, Kino.Postprocessing, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  m_AfterStackBundles:
-  - assemblyQualifiedName: Kino.PostProcessing.Invert, Kino.Postprocessing, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - assemblyQualifiedName: Kino.PostProcessing.Overlay, Kino.Postprocessing, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - assemblyQualifiedName: Kino.PostProcessing.Sharpen, Kino.Postprocessing, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+  m_BeforeStackBundles: []
+  m_AfterStackBundles: []
 --- !u!20 &158424524
 Camera:
   m_ObjectHideFlags: 0
@@ -712,7 +698,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1345559283}
-  m_Mesh: {fileID: 4300002, guid: 986fed056d389864d8d17887119a983e, type: 3}
+  m_Mesh: {fileID: 4300002, guid: 46f48e5f14eff41f9add98c2a52817b5, type: 3}
 --- !u!4 &1345559286
 Transform:
   m_ObjectHideFlags: 0
@@ -991,10 +977,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _density: 0.18
-  _scale: 1.5
+  _scale: 0.52
   _stretch: 6.5
   _fallDistance: 440
-  _fluctuation: 2.6
+  _fluctuation: 0
   _emissionColor1: {r: 0.8773585, g: 0.0613014, b: 0, a: 0}
   _emissionColor2: {r: 0.047169805, g: 0.016739804, b: 0, a: 0}
   _transitionColor: {r: 4, g: 2.7137256, b: 0, a: 0}
@@ -1009,7 +995,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2015354180}
   m_LocalRotation: {x: -0.051745556, y: 0.04952778, z: -0.15484002, w: 0.9853396}
-  m_LocalPosition: {x: 0, y: 1.184, z: -1.1}
+  m_LocalPosition: {x: 0, y: 0.454, z: -0.313}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
