@@ -4,7 +4,7 @@
 // Most parts of this shader are simply copy-pasted from the HDRP Lit shader.
 // See "Custom:" for modifications from the original shader.
 
-Shader "Voxelizer"
+Shader "OLDVoxelizerOLD"
 {
     Properties
     {
@@ -380,7 +380,7 @@ Shader "Voxelizer"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassGBuffer.hlsl"
 
             // Custom: Geometry and fragment shader implementation
-            #include "Assets/DECONSTRUCTION/CustomShader/Common/Shader/CustomVertex.hlsl"
+            #include "Assets/DECONSTRUCTION/CustomShader/Common/Shader/OLDCustomVertexOLD.hlsl"
             #include "VoxelizerGeometry.hlsl"
             #include "VoxelizerFragment.hlsl"
 
@@ -419,7 +419,7 @@ Shader "Voxelizer"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDepthOnly.hlsl"
 
             // Custom: Geometry shader implementation
-            #include "Assets/DECONSTRUCTION/CustomShader/Common/Shader/CustomVertex.hlsl"
+            #include "Assets/DECONSTRUCTION/CustomShader/Common/Shader/OLDCustomVertexOLD.hlsl"
             #include "VoxelizerGeometry.hlsl"
 
             // Custom: Shader entry points
@@ -470,7 +470,58 @@ Shader "Voxelizer"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassDepthOnly.hlsl"
 
             // Custom: Geometry shader implementation
-            #include "Assets/DECONSTRUCTION/CustomShader/Common/Shader/CustomVertex.hlsl"
+            #include "Assets/DECONSTRUCTION/CustomShader/Common/Shader/OLDCustomVertexOLD.hlsl"
+            #include "VoxelizerGeometry.hlsl"
+
+            // Custom: Shader entry points
+            #pragma vertex VertexThru
+            #pragma geometry VoxelizerGeometry
+            #pragma fragment Frag
+
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "Motion Vectors"
+            Tags{ "LightMode" = "MotionVectors" } // Caution, this need to be call like this to setup the correct parameters by C++ (legacy Unity)
+
+            // If velocity pass (motion vectors) is enabled we tag the stencil so it don't perform CameraMotionVelocity
+            Stencil
+            {
+                WriteMask [_StencilWriteMaskMV]
+                Ref [_StencilRefMV]
+                Comp Always
+                Pass Replace
+            }
+
+            Cull[_CullMode]
+
+            ZWrite On
+
+            HLSLPROGRAM
+            #pragma multi_compile _ WRITE_NORMAL_BUFFER
+            #pragma multi_compile _ WRITE_MSAA_DEPTH
+
+            #define SHADERPASS SHADERPASS_VELOCITY
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/ShaderLibrary/ShaderVariables.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Material.hlsl"
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
+            #ifdef WRITE_NORMAL_BUFFER // If enabled we need all regular interpolator
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitSharePass.hlsl"
+            #else
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitVelocityPass.hlsl"
+            #endif
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
+
+            // Custom: Force-replace on unity_MotionVectorsParams
+            // (hasLastPositionStream, forceNoMotion [0: no motion], s_bias)
+            #define unity_MotionVectorsParams float3(1, 1, -0.001)
+            #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassVelocity.hlsl"
+            #undef unity_MotionVectorsParams
+
+            // Custom: Geometry shader implementation
+            #include "Assets/DECONSTRUCTION/CustomShader/Common/Shader/OLDCustomVertexOLD.hlsl"
             #include "VoxelizerGeometry.hlsl"
 
             // Custom: Shader entry points

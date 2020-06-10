@@ -34,7 +34,6 @@ struct Attributes
 #ifdef ATTRIBUTES_NEED_COLOR
     float4 color        : COLOR;
 #endif
-	float age : TEXCOORD4;
 
 UNITY_VERTEX_INPUT_INSTANCE_ID
 };
@@ -68,31 +67,9 @@ AttributesMesh ConvertToAttributesMesh(Attributes input)
     return am;
 }
 
-
-
-struct inputData {
-	float3 position;
-	float3 normal;
-	float age;
-};
-StructuredBuffer<inputData> _Data;
-
-
 // Passthrough vertex shader
 // We do all vertex calculations in the geometry shader.
-Attributes VertexThru(uint id : SV_VertexID)
-{
-	Attributes atb;
-	inputData input = _Data[id];
-	atb.positionOS.xyz = input.position;
-	atb.positionOS.w = 0;
-
-#ifdef ATTRIBUTES_NEED_NORMAL
-	atb.normalOS = input.normal;
-#endif
-	atb.age = input.age;
-	return atb;
-}
+void VertexThru(inout Attributes input) {}
 
 // Vertex data pack function
 // Re-pack the vertex data and apply the original vertex function.
