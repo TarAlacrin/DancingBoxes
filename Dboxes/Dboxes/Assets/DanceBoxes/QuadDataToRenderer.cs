@@ -34,7 +34,7 @@ namespace DanceBoxes
 				material.SetPass(0);
 				material.SetBuffer("_Data", quadDataBuffer[READ]);
 				BufferTools.DebugComputeRaw<int>(quadArgBuffer, "quadARGEBUFFEr", 4);
-				Graphics.DrawProceduralIndirect(MeshTopology.Points, quadArgBuffer, 0);
+				Graphics.DrawProceduralIndirectNow(MeshTopology.Points, quadArgBuffer, 0);
 			}
 		}
 
