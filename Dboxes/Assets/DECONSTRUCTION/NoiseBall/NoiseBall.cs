@@ -77,10 +77,11 @@ sealed class NoiseBall : MonoBehaviour
         _props.SetVector("_NoiseOffset", _noiseMotion * time);
         _props.SetMatrix("_LocalToWorld", transform.localToWorldMatrix);
 
+		
         Graphics.DrawProcedural(
             _material,
             new Bounds(transform.position, transform.lossyScale * 5),
-            MeshTopology.Triangles, _triangleCount * 3, 1,
+            MeshTopology.Points, _triangleCount, 1,
             null, _props,
             ShadowCastingMode.TwoSided, true, gameObject.layer
         );

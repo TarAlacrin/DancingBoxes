@@ -96,6 +96,25 @@ namespace DanceBoxes
 		}
 
 
+		public Vector3 renderBoundsCenter
+		{
+			get
+			{
+				Vector3 toret = voxelDimensions * 0.5f;
+				if (sizeAdjuster != null)
+					toret += sizeAdjuster.position;
+				return toret;
+			}
+		}
+		public Vector3 renderBoundsScale
+		{
+			get
+			{
+				return voxelDimensions;
+			}
+		}
+
+
 		private void Awake()
 		{
 			if (sizeAdjuster != null)

@@ -23,8 +23,20 @@ struct Attributes
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
+struct v2g
+{
+	uint vertexID : TEXCOORD0;
+};
+
+v2g CustomVert(Attributes input)
+{
+	v2g at;
+	at.vertexID = input.vertexID;
+	return at;
+}
+
 // Custom vertex shader
-PackedVaryingsType CustomVert(Attributes input)
+PackedVaryingsType CustomVertPacker(v2g input)
 {
 
     uint t_idx = input.vertexID / 3;         // Triangle index
@@ -99,11 +111,21 @@ PackedVaryingsType CustomVert(Attributes input)
 
 
 [maxvertexcount(3)]
-void Geom(triangle PackedVaryingsType IN[3], inout TriangleStream<PackedVaryingsType> outStream)
+void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 {
-	outStream.Append(IN[0]);
-	outStream.Append(IN[1]);
-	outStream.Append(IN[2]);
+	IN[0].vertexID *= 3;
+	PackedVaryingsType pvtin = CustomVertPacker(IN[0]);
+	outStream.Append(pvtin);
+	IN[0].vertexID += 1;
+	 pvtin = CustomVertPacker(IN[0]);
+	outStream.Append(pvtin);
+	IN[0].vertexID += 1;
+	 pvtin = CustomVertPacker(IN[0]);
+	outStream.Append(pvtin);
 
+	//pvtin = CustomVertPacker(IN[1]);
+	//outStream.Append(pvtin);
+	//pvtin = CustomVertPacker(IN[2]);
+	//outStream.Append(pvtin);
 	outStream.RestartStrip();
 }

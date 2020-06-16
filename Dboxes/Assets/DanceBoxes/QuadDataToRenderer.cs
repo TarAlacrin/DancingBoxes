@@ -26,16 +26,28 @@ namespace DanceBoxes
 			this.quadDataBuffer = quadDataAndAges;
 		}
 
-		private void OnRenderObject()
+
+
+		void Update()
 		{
 			if (quadDataBuffer != null)
 			{
-				ComputeBuffer.CopyCount(quadDataBuffer[READ], quadArgBuffer,0);
+				ComputeBuffer.CopyCount(quadDataBuffer[READ], quadArgBuffer, 0);
 				material.SetPass(0);
 				material.SetBuffer("_Data", quadDataBuffer[READ]);
-				BufferTools.DebugComputeRaw<int>(quadArgBuffer, "quadARGEBUFFEr", 4);
-				Graphics.DrawProceduralIndirectNow(MeshTopology.Points, quadArgBuffer, 0);
+				//BufferTools.DebugComputeRaw<int>(quadArgBuffer, "quadARGEBUFFEr", 4);
+				//Graphics.DrawProceduralIndirectNow(MeshTopology.Points, quadArgBuffer, 0);
+				/*Graphics.DrawProcedural(
+					material,
+					new Bounds (DanceBoxManager.inst.renderBoundsCenter, DanceBoxManager.inst.renderBoundsScale),
+					MeshTopology.Points, 
+					)*/
 			}
+
+		}
+
+		private void OnRenderObject()
+		{
 		}
 
 		private void OnDisable()
