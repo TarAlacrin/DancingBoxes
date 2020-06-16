@@ -3,17 +3,22 @@
 #include "Assets/DanceBoxes/ComputeIncludes.cginc"
 
 RWStructuredBuffer<float> WVoxelAgeBuffer;
- 
+float _Time;
 
 [numthreads(THREADSIZE, 1, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
     uint index = Index(id);
     int3 coords = Coord(index);
-    //float isinrange = cos(coords.x * 0.5 + coords.y) * saturate(0.5 + cos(coords.z * 0.6 + coords.x * 0.2)) * 10;
-    //float sphere = saturate(_Dimensions.x * 0.4 - length(coords - _Dimensions.xyz * 0.5));
-	float isinrange = mod(id.x,3);
-	float sphere = 1;
+
+	float4 slowTime = float4(cos(_Time*0.1), sin(_Time*0.17), cos(_Time*0.23 + 1), sin(_Time*0.43 - 1));
+	float3 cubeCenta = _Dimensions.xyz * 0.5+ slowTime.xyz*5;
+	float cubeRadius = _Dimensions.x * 0.4+ slowTime.w*5;
+
+    float isinrange = cos(coords.x * 0.5 + coords.y) * saturate(0.5 + cos(coords.z * 0.6 + coords.x * 0.2)) * 10;//slices
+    float sphere = saturate(cubeRadius - length(coords - cubeCenta));//
+	//float isinrange = mod(id.x,3);
+	//float sphere = 1;
     WVoxelAgeBuffer[index] = isinrange * sphere;
 }
   

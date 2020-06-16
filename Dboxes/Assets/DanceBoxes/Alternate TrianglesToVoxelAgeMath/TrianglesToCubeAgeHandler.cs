@@ -119,7 +119,10 @@ namespace DanceBoxes
 			vertPosToCubeAgeCompute.SetBuffer(intersectionsKernel, "WAIntersections", triangleIntersectionBuffer[WRITE]);
 
 			if (debug)
+			{
+				debug = false;
 				BufferTools.DebugComputeRaw<Vector4>(triVertPosBuffers[READ], "unsorted vertex pos check", vertexCount);
+			}
 
 			vertPosToCubeAgeCompute.Dispatch(intersectionsKernel, triangleCount, 1, 1);
 

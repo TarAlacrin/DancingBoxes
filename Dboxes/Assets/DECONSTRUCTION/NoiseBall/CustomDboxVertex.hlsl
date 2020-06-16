@@ -36,7 +36,7 @@ v2g CustomVert(Attributes input)
 }
 
 // Custom vertex shader
-PackedVaryingsType CustomVertPacker(v2g input)
+PackedVaryingsType OldVertPacker(v2g input)
 {
 
     uint t_idx = input.vertexID / 3;         // Triangle index
@@ -110,17 +110,70 @@ PackedVaryingsType CustomVertPacker(v2g input)
 
 
 
+PackedVaryingsType CustomVertPacker(float3 pos, float3 norm)
+{
+	// Imitate a common vertex input.
+	AttributesMesh am;
+	am.positionOS = pos;
+#ifdef ATTRIBUTES_NEED_NORMAL
+	am.normalOS = norm;
+#endif
+#ifdef ATTRIBUTES_NEED_TANGENT
+	am.tangentOS = 0;
+#endif
+#ifdef ATTRIBUTES_NEED_TEXCOORD0
+	am.uv0 = 0;
+#endif
+#ifdef ATTRIBUTES_NEED_TEXCOORD1
+	am.uv1 = 0;
+#endif
+#ifdef ATTRIBUTES_NEED_TEXCOORD2
+	am.uv2 = 0;
+#endif
+#ifdef ATTRIBUTES_NEED_TEXCOORD3
+	am.uv3 = 0;
+#endif
+#ifdef ATTRIBUTES_NEED_COLOR
+	am.color = 0;
+#endif
+	UNITY_TRANSFER_INSTANCE_ID(input, am);
+
+	// Throw it into the default vertex pipeline.
+	VaryingsType varyingsType;
+	varyingsType.vmesh = VertMesh(am);
+	return PackVaryingsType(varyingsType);
+}
+
+
+struct inputData {
+	float3 position;
+	float3 normal;
+	float age;
+};
+
+StructuredBuffer< inputData> _Data;
+
 [maxvertexcount(3)]
 void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 {
-	IN[0].vertexID *= 3;
-	PackedVaryingsType pvtin = CustomVertPacker(IN[0]);
+	float3 posi = _Data[IN[0].vertexID].position;  //float3(fmod(IN[0].vertexID, 5), fmod(floor(float(IN[0].vertexID)*0.2), 5), floor(float(IN[0].vertexID)*0.04));
+	float3 norm = normalize(_Data[IN[0].vertexID].normal);
+	//IN[0].vertexID *= 3;
+
+
+	float3 up = normalize(lerp(float3(0, 0, 1), float3(0, 1, 0), saturate(ceil(length(abs(_Data[IN[0].vertexID].normal) - float3(0, 1, 0))))));
+	float3 right = normalize(cross(up, _Data[IN[0].vertexID].normal));
+	float4 binormal =float4(up, 0)*0.5f;
+	float4 tangent = float4(right, 0)*0.5f;
+
+
+	PackedVaryingsType pvtin = CustomVertPacker(posi-tangent -binormal, norm);// OldVertPacker(IN[0]);
 	outStream.Append(pvtin);
-	IN[0].vertexID += 1;
-	 pvtin = CustomVertPacker(IN[0]);
+	//IN[0].vertexID += 1;
+	pvtin = CustomVertPacker(posi+ binormal, norm);
 	outStream.Append(pvtin);
-	IN[0].vertexID += 1;
-	 pvtin = CustomVertPacker(IN[0]);
+	//IN[0].vertexID += 1;
+	pvtin = CustomVertPacker(posi + tangent, norm);
 	outStream.Append(pvtin);
 
 	//pvtin = CustomVertPacker(IN[1]);

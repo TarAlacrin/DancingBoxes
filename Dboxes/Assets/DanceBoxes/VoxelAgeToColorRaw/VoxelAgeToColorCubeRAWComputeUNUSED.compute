@@ -116,7 +116,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 	float age = RCubeAges[index];
 
 	
-	QuadProducerDefault(index, coords, age);
+	QuadProducerNoAgeRestriction(index, coords, age);
 }
 
 

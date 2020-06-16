@@ -27,6 +27,7 @@ namespace DanceBoxes
 		}
 
 
+		MaterialPropertyBlock _props;
 
 		void Update()
 		{
@@ -42,13 +43,17 @@ namespace DanceBoxes
 					new Bounds (DanceBoxManager.inst.renderBoundsCenter, DanceBoxManager.inst.renderBoundsScale),
 					MeshTopology.Points, 
 					)*/
+				if (_props == null) _props = new MaterialPropertyBlock();
+
+				_props.SetBuffer("_Data", quadDataBuffer[READ]);
+
+				Graphics.DrawProceduralIndirect(material,
+					new Bounds(DanceBoxManager.inst.renderBoundsCenter, DanceBoxManager.inst.renderBoundsScale),
+					MeshTopology.Points, quadArgBuffer, 0, null, _props, UnityEngine.Rendering.ShadowCastingMode.On, true);
 			}
 
 		}
 
-		private void OnRenderObject()
-		{
-		}
 
 		private void OnDisable()
 		{

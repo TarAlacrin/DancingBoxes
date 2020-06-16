@@ -47,16 +47,18 @@ namespace DanceBoxes
 			
 			for (int ind = 0; ind < initData.Length; ind ++)
 			{
-				initData[ind] = new Vector4(mesh.vertices[ind % mesh.vertexCount].x, mesh.vertices[ind % mesh.vertexCount].y, mesh.vertices[ind % mesh.vertexCount].z, ind);
+				// new Vector4(ind % 4, ind % 9, ind % 25,1)*3;//
+				initData[ind] =new Vector4(mesh.vertices[ind % mesh.vertexCount].x, mesh.vertices[ind % mesh.vertexCount].y, mesh.vertices[ind % mesh.vertexCount].z, ind)*20f+Vector4.one*40f;
+				initData[ind].w = ind;
 			}
 
-			triVertexPositionBuffer[READ] = new ComputeBuffer(vertCount/3, sizeof(float) * 4*3, ComputeBufferType.Append);
-			triVertexPositionBuffer[WRITE] = new ComputeBuffer(vertCount/3, sizeof(float) * 4*3, ComputeBufferType.Append);
+			triVertexPositionBuffer[READ] = new ComputeBuffer(vertCount/3, sizeof(float) * 4*3, ComputeBufferType.Append, ComputeBufferMode.Immutable);
+			triVertexPositionBuffer[WRITE] = new ComputeBuffer(vertCount/3, sizeof(float) * 4*3, ComputeBufferType.Append, ComputeBufferMode.Immutable);
 
 			triVertexPositionBuffer[READ].SetData(initData);
 			triVertexPositionBuffer[WRITE].SetData(initData);
-			triVertexPositionBuffer[READ].SetCounterValue(0);
-			triVertexPositionBuffer[WRITE].SetCounterValue(0);
+			triVertexPositionBuffer[READ].SetCounterValue((uint)(vertCount/3));
+			triVertexPositionBuffer[WRITE].SetCounterValue((uint)(vertCount/3));
 
 			argBuffer = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
 
@@ -93,6 +95,7 @@ namespace DanceBoxes
 
 			if(debug)
 			{
+				debug = false;
 				int[] argdata = new int[] { 0, 1, 0, 0 };
 				argBuffer.SetData(argdata);
 				ComputeBuffer.CopyCount(triVertexPositionBuffer[READ], argBuffer, 0);
@@ -111,7 +114,7 @@ namespace DanceBoxes
 			material.SetPass(0);
 			material.hideFlags = HideFlags.HideAndDontSave;
 			material.SetBuffer("WATriVertexPositionBuffer", triVertexPositionBuffer[WRITE]);
-			Graphics.SetRandomWriteTarget(1, triVertexPositionBuffer[WRITE], false);
+			Graphics.SetRandomWriteTarget(7, triVertexPositionBuffer[WRITE], false);
 		}
 
 		void DoDebug(int[] argdata)
