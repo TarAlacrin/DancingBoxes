@@ -95,3 +95,15 @@ PackedVaryingsType CustomVert(Attributes input)
     varyingsType.vmesh = VertMesh(am);
     return PackVaryingsType(varyingsType);
 }
+
+
+
+[maxvertexcount(3)]
+void Geom(triangle PackedVaryingsType IN[3], inout TriangleStream<PackedVaryingsType> outStream)
+{
+	outStream.Append(IN[0]);
+	outStream.Append(IN[1]);
+	outStream.Append(IN[2]);
+
+	outStream.RestartStrip();
+}

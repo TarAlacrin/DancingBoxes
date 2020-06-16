@@ -11,10 +11,10 @@ namespace DanceBoxes
 		public const int READ = 1;
 		public const int WRITE = 0;
 
-		public GameObject voxelAgeRecipientObject;
-		IWantVoxelAges voxelAgeRecipient;
 
 		public ComputeShader voxelAgeGenerator;
+		public GameObject voxelAgeRecipientObject;
+		IWantVoxelAges voxelAgeRecipient;
 
 		ComputeBuffer[] voxelAgeBuffer = new ComputeBuffer[2];
 
