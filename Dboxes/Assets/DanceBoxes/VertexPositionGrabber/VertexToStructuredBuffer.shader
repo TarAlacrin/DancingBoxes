@@ -27,6 +27,7 @@ Pass
 				float4 p3;
 			};
             uniform AppendStructuredBuffer<tridata> WATriVertexPositionBuffer : register(u7);
+			uniform float4x4 _TransformationAdjuster;
 
 			struct APPDATA
 			{
@@ -53,12 +54,12 @@ Pass
             {
 				v2g vs;
 				vs.worldPos = float4(mul(unity_ObjectToWorld, IN.vertex).xyz, IN.id);
+				vs.worldPos = mul(_TransformationAdjuster, vs.worldPos).xyzw;
+
 
 				vs.pos = UnityObjectToClipPos(IN.vertex);
 				vs.uv = IN.uv;
 				vs.col = IN.col;
-
-				//WATriVertexPositionBuffer.Append(vs.worldPos);
 
                 return vs;
             }
@@ -74,13 +75,6 @@ Pass
 
 			[maxvertexcount(3)]
 			void geom(triangle v2g input[3], inout TriangleStream<g2f> tristream) {
-				//g2f o;
-				//o.pos = input[0].pos;	o.uv = input[0].uv;		o.col = input[0].col;
-				//tristream.Append(o);
-				//o.pos = input[1].pos;	o.uv = input[1].uv;		o.col = input[1].col;
-				//tristream.Append(o);
-				//o.pos = input[2].pos;	o.uv = input[2].uv;		o.col = input[2].col;
-				//tristream.Append(o);
 				tridata t;
 				t.p1 = input[0].worldPos;
 				t.p2 = input[1].worldPos;
@@ -88,13 +82,10 @@ Pass
 
 				WATriVertexPositionBuffer.Append(t);
 
-				geomSubFunc(input[0], tristream);
-				geomSubFunc(input[1], tristream);
-				geomSubFunc(input[2], tristream);
-				tristream.RestartStrip();
-				//WATriVertexPositionBuffer.Append(input[0].worldPos);
-				//WATriVertexPositionBuffer.Append(input[1].worldPos);
-				//WATriVertexPositionBuffer.Append(input[2].worldPos);
+				//geomSubFunc(input[0], tristream);
+				//geomSubFunc(input[1], tristream);
+				//geomSubFunc(input[2], tristream);
+				//tristream.RestartStrip();
 				 
 			}
  

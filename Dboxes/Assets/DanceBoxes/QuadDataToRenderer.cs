@@ -36,15 +36,22 @@ namespace DanceBoxes
 				ComputeBuffer.CopyCount(quadDataBuffer[READ], quadArgBuffer, 0);
 				material.SetPass(0);
 				material.SetBuffer("_Data", quadDataBuffer[READ]);
-				//BufferTools.DebugComputeRaw<int>(quadArgBuffer, "quadARGEBUFFEr", 4);
-				//Graphics.DrawProceduralIndirectNow(MeshTopology.Points, quadArgBuffer, 0);
-				/*Graphics.DrawProcedural(
-					material,
-					new Bounds (DanceBoxManager.inst.renderBoundsCenter, DanceBoxManager.inst.renderBoundsScale),
-					MeshTopology.Points, 
-					)*/
-				if (_props == null) _props = new MaterialPropertyBlock();
 
+
+				Matrix4x4 BigScaleToSmallScale = Matrix4x4.identity;
+				if (DanceBoxManager.inst.sizeAdjuster != null)
+					BigScaleToSmallScale = DanceBoxManager.inst.sizeAdjuster.worldToLocalMatrix;
+
+				Matrix4x4 SmallScaleToEnvScale = Matrix4x4.identity;
+				if (DanceBoxManager.inst.environmentBoxTransform != null)
+					SmallScaleToEnvScale = DanceBoxManager.inst.environmentBoxTransform.localToWorldMatrix;
+
+				Matrix4x4 final4x4 = BigScaleToSmallScale*SmallScaleToEnvScale;
+
+				material.SetMatrix("_TransformationMatrix", final4x4);
+
+				if (_props == null) _props = new MaterialPropertyBlock();
+					
 				_props.SetBuffer("_Data", quadDataBuffer[READ]);
 
 				Graphics.DrawProceduralIndirect(material,

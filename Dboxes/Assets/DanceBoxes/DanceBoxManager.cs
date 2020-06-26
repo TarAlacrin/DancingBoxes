@@ -15,6 +15,8 @@ namespace DanceBoxes
 		private const int threadGroupSize = 64;
 		[Space]
 		public Transform sizeAdjuster = null;
+		public Transform environmentBoxTransform =null;
+
 
 		public int captureFrametime = 20;
 
@@ -37,6 +39,7 @@ namespace DanceBoxes
 				return new Vector4(1f/voxelDimensions.x, 1f/voxelDimensions.y, 1f/voxelDimensions.z, 1f/(voxelDimensions.x * voxelDimensions.y));
 			}
 		}
+
 
 
 

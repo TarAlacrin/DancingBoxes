@@ -108,15 +108,20 @@ PackedVaryingsType OldVertPacker(v2g input)
     return PackVaryingsType(varyingsType);
 }
 
+uniform float4x4 _TransformationMatrix;
 
 
-PackedVaryingsType CustomVertPacker(float3 pos, float3 norm)
+PackedVaryingsType CustomVertPacker(float3 posws, float3 normws)
 {
 	// Imitate a common vertex input.
 	AttributesMesh am;
-	am.positionOS = pos;
+
+	float3 posPostTrans = mul(_TransformationMatrix, float4(posws, 1)).xyz;
+	float3 nrmPostTrans = mul(_TransformationMatrix, float4(normws, 0)).xyz;
+
+	am.positionOS = posPostTrans;
 #ifdef ATTRIBUTES_NEED_NORMAL
-	am.normalOS = norm;
+	am.normalOS = nrmPostTrans;
 #endif
 #ifdef ATTRIBUTES_NEED_TANGENT
 	am.tangentOS = 0;
@@ -153,7 +158,7 @@ struct inputData {
 
 StructuredBuffer< inputData> _Data;
 
-[maxvertexcount(3)]
+[maxvertexcount(4)]
 void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 {
 	float3 posi = _Data[IN[0].vertexID].position;  //float3(fmod(IN[0].vertexID, 5), fmod(floor(float(IN[0].vertexID)*0.2), 5), floor(float(IN[0].vertexID)*0.04));
@@ -163,22 +168,18 @@ void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 
 	float3 up = normalize(lerp(float3(0, 0, 1), float3(0, 1, 0), saturate(ceil(length(abs(_Data[IN[0].vertexID].normal) - float3(0, 1, 0))))));
 	float3 right = normalize(cross(up, _Data[IN[0].vertexID].normal));
-	float4 binormal =float4(up, 0)*0.5f;
-	float4 tangent = float4(right, 0)*0.5f;
+	float3 binormal = up*0.5f;
+	float3 tangent = right*0.5f;
 
 
-	PackedVaryingsType pvtin = CustomVertPacker(posi-tangent -binormal, norm);// OldVertPacker(IN[0]);
+	PackedVaryingsType pvtin = CustomVertPacker(posi+tangent -binormal, norm);// OldVertPacker(IN[0]);
 	outStream.Append(pvtin);
-	//IN[0].vertexID += 1;
-	pvtin = CustomVertPacker(posi+ binormal, norm);
+	pvtin = CustomVertPacker(posi + tangent + binormal, norm);
 	outStream.Append(pvtin);
-	//IN[0].vertexID += 1;
-	pvtin = CustomVertPacker(posi + tangent, norm);
+	pvtin = CustomVertPacker(posi - tangent - binormal, norm);
+	outStream.Append(pvtin);
+	pvtin = CustomVertPacker(posi - tangent + binormal, norm);
 	outStream.Append(pvtin);
 
-	//pvtin = CustomVertPacker(IN[1]);
-	//outStream.Append(pvtin);
-	//pvtin = CustomVertPacker(IN[2]);
-	//outStream.Append(pvtin);
 	outStream.RestartStrip();
 }

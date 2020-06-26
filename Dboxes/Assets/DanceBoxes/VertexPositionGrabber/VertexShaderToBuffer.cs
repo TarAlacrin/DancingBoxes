@@ -112,7 +112,19 @@ namespace DanceBoxes
 			Graphics.ClearRandomWriteTargets();
 			triVertexPositionBuffer[WRITE].SetCounterValue(0);
 			material.SetPass(0);
-			material.hideFlags = HideFlags.HideAndDontSave;
+			material.hideFlags = HideFlags.None;
+
+			Matrix4x4 SmallScaleToBigScale = Matrix4x4.identity;
+			if (DanceBoxManager.inst.sizeAdjuster != null)
+				 SmallScaleToBigScale = DanceBoxManager.inst.sizeAdjuster.localToWorldMatrix;
+
+			Matrix4x4 EnvScaleToSmallScale = Matrix4x4.identity;
+			if (DanceBoxManager.inst.environmentBoxTransform != null)
+				EnvScaleToSmallScale = DanceBoxManager.inst.environmentBoxTransform.worldToLocalMatrix;
+
+
+			material.SetMatrix("_TransformationAdjuster", EnvScaleToSmallScale * SmallScaleToBigScale);
+
 			material.SetBuffer("WATriVertexPositionBuffer", triVertexPositionBuffer[WRITE]);
 			Graphics.SetRandomWriteTarget(7, triVertexPositionBuffer[WRITE], false);
 		}
