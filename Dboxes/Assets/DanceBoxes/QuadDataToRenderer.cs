@@ -54,6 +54,11 @@ namespace DanceBoxes
 					
 				_props.SetBuffer("_Data", quadDataBuffer[READ]);
 
+				Matrix4x4 cameraToBurn =  DanceBoxManager.inst.burnTransform.worldToLocalMatrix;//first matrix to multiply goes to teh left
+
+
+				_props.SetMatrix("_BurnMatrix", cameraToBurn);
+
 				Graphics.DrawProceduralIndirect(material,
 					new Bounds(DanceBoxManager.inst.renderBoundsCenter, DanceBoxManager.inst.renderBoundsScale),
 					MeshTopology.Points, quadArgBuffer, 0, null, _props, UnityEngine.Rendering.ShadowCastingMode.On, true);

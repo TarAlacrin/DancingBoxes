@@ -82,6 +82,11 @@ Shader "DboxHDRP"
         // Following options are for the GUI inspector and different from the input parameters above
         // These option below will cause different compilation flag.
         [ToggleUI]  _EnableSpecularOcclusion("Enable specular occlusion", Float) = 0.0
+		
+		[HDR] _EmissionHsvm1("_EmissionHsvm1", Color) = (0, 0, 0)
+		[HDR] _EmissionHsvm2("_EmissionHsvm2", Color) = (0, 0, 0)
+		[HDR] _TransitionColor("_TransitionColor", Color) = (0, 0, 0)
+		[HDR] _LineColor("_LineColor", Color) = (0, 0, 0)
 
         [HDR] _EmissiveColor("EmissiveColor", Color) = (0, 0, 0)
         // Used only to serialize the LDR and HDR emissive color in the material UI,
@@ -392,15 +397,15 @@ Shader "DboxHDRP"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/Lit.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/ShaderPass/LitSharePass.hlsl"
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/Material/Lit/LitData.hlsl"
-
             #include "Packages/com.unity.render-pipelines.high-definition/Runtime/RenderPipeline/ShaderPass/ShaderPassGBuffer.hlsl"
 
             // Custom: Custom vertex shader
             #include "CustomDboxVertex.hlsl"
+			#include "VoxelizerFragment.hlsl"
 			#pragma require geometry
             #pragma vertex CustomVert
 			#pragma geometry Geom
-            #pragma fragment Frag
+            #pragma fragment VoxelizerFragment
 
             ENDHLSL
         }

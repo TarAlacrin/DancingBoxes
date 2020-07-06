@@ -35,86 +35,16 @@ v2g CustomVert(Attributes input)
 	return at;
 }
 
-// Custom vertex shader
-PackedVaryingsType OldVertPacker(v2g input)
-{
-
-    uint t_idx = input.vertexID / 3;         // Triangle index
-    uint v_idx = input.vertexID - t_idx * 3; // Vertex index
-
-    // Time dependent random number seed
-    uint seed = _LocalTime + (float)t_idx / _TriangleCount;
-    seed = ((seed << 16) + t_idx) * 4;
-
-    // Random triangle on unit sphere
-    float3 v1 = RandomPoint(seed + 0);
-    float3 v2 = RandomPoint(seed + 1);
-    float3 v3 = RandomPoint(seed + 2);
-
-    // Constraint with the extent parameter
-    v2 = normalize(v1 + normalize(v2 - v1) * _Extent);
-    v3 = normalize(v1 + normalize(v3 - v1) * _Extent);
-
-    // Displacement by noise field
-    float l1 = snoise(v1 * _NoiseFrequency + _NoiseOffset);
-    float l2 = snoise(v2 * _NoiseFrequency + _NoiseOffset);
-    float l3 = snoise(v3 * _NoiseFrequency + _NoiseOffset);
-
-    l1 = abs(l1 * l1 * l1);
-    l2 = abs(l2 * l2 * l2);
-    l3 = abs(l3 * l3 * l3);
-
-    v1 *= 1 + l1 * _NoiseAmplitude;
-    v2 *= 1 + l2 * _NoiseAmplitude;
-    v3 *= 1 + l3 * _NoiseAmplitude;
-
-    // Vertex position/normal vector
-    float3 pos = v_idx == 0 ? v1 : (v_idx == 1 ? v2 : v3);
-    float3 norm = normalize(cross(v2 - v1, v3 - v2));
-
-    // Apply the transform matrix.
-    pos = mul(_LocalToWorld, float4(pos, 1)).xyz;
-    norm = mul((float3x3)_LocalToWorld, norm);
-
-    // Imitate a common vertex input.
-    AttributesMesh am;
-    am.positionOS = pos;
-#ifdef ATTRIBUTES_NEED_NORMAL
-    am.normalOS = norm;
-#endif
-#ifdef ATTRIBUTES_NEED_TANGENT
-    am.tangentOS = 0;
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD0
-    am.uv0 = 0;
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD1
-    am.uv1 = 0;
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD2
-    am.uv2 = 0;
-#endif
-#ifdef ATTRIBUTES_NEED_TEXCOORD3
-    am.uv3 = 0;
-#endif
-#ifdef ATTRIBUTES_NEED_COLOR
-    am.color = 0;
-#endif
-    UNITY_TRANSFER_INSTANCE_ID(input, am);
-
-    // Throw it into the default vertex pipeline.
-    VaryingsType varyingsType;
-    varyingsType.vmesh = VertMesh(am);
-    return PackVaryingsType(varyingsType);
-}
 
 uniform float4x4 _TransformationMatrix;
 
 
-PackedVaryingsType CustomVertPacker(float3 posws, float3 normws)
+PackedVaryingsType CustomVertPacker(float3 posws, float3 normws, float4 uvposagerand)
 {
 	// Imitate a common vertex input.
 	AttributesMesh am;
+
+
 
 	float3 posPostTrans = mul(_TransformationMatrix, float4(posws, 1)).xyz;
 	float3 nrmPostTrans = mul(_TransformationMatrix, float4(normws, 0)).xyz;
@@ -139,7 +69,7 @@ PackedVaryingsType CustomVertPacker(float3 posws, float3 normws)
 	am.uv3 = 0;
 #endif
 #ifdef ATTRIBUTES_NEED_COLOR
-	am.color = 0;
+	am.color = uvposagerand;// float4(uvposrand.x, uvposrand.y, uvposrand.z,0);
 #endif
 	UNITY_TRANSFER_INSTANCE_ID(input, am);
 
@@ -165,6 +95,11 @@ void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 	float3 norm = normalize(_Data[IN[0].vertexID].normal);
 	//IN[0].vertexID *= 3;
 
+	uint dim = 96;
+	uint seed = posi.x + posi.y * dim + posi.z * dim *dim;//IN[0].vertexID * 881;
+	seed *= 881;
+	float rand = Hash(seed);
+
 
 	float3 up = normalize(lerp(float3(0, 0, 1), float3(0, 1, 0), saturate(ceil(length(abs(_Data[IN[0].vertexID].normal) - float3(0, 1, 0))))));
 	float3 right = normalize(cross(up, _Data[IN[0].vertexID].normal));
@@ -172,14 +107,19 @@ void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 	float3 tangent = right*0.5f;
 
 
-	PackedVaryingsType pvtin = CustomVertPacker(posi+tangent -binormal, norm);// OldVertPacker(IN[0]);
+	PackedVaryingsType pvtin = CustomVertPacker(posi+tangent -binormal, norm, float4(1,0, _Data[IN[0].vertexID].age, rand));// OldVertPacker(IN[0]);
 	outStream.Append(pvtin);
-	pvtin = CustomVertPacker(posi + tangent + binormal, norm);
+	pvtin = CustomVertPacker(posi + tangent + binormal, norm, float4(1, 1, _Data[IN[0].vertexID].age, rand));
 	outStream.Append(pvtin);
-	pvtin = CustomVertPacker(posi - tangent - binormal, norm);
+	pvtin = CustomVertPacker(posi - tangent - binormal, norm, float4(0, 0, _Data[IN[0].vertexID].age, rand));
 	outStream.Append(pvtin);
-	pvtin = CustomVertPacker(posi - tangent + binormal, norm);
+	pvtin = CustomVertPacker(posi - tangent + binormal, norm, float4(0, 1, _Data[IN[0].vertexID].age, rand));
 	outStream.Append(pvtin);
 
 	outStream.RestartStrip();
 }
+
+
+
+
+

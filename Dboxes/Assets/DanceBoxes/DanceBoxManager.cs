@@ -20,6 +20,9 @@ namespace DanceBoxes
 
 		public int captureFrametime = 20;
 
+		[Space]
+		public Transform burnTransform;
+
 		public Vector3 voxelDimensions{
 			get{
 				return new Vector3(singleDimensionCount, singleDimensionCount, singleDimensionCount);

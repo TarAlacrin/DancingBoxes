@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/DECONSTRUCTION/Test.unity
+    path: Assets/DECONSTRUCTION/ActualSCENE.unity
     guid: d3142d63af12625f2a1628360576aae0
   m_configObjects: {}
