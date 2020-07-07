@@ -122,8 +122,8 @@ namespace DanceBoxes
 			if (DanceBoxManager.inst.environmentBoxTransform != null)
 				EnvScaleToSmallScale = DanceBoxManager.inst.environmentBoxTransform.worldToLocalMatrix;
 
-
-			material.SetMatrix("_TransformationAdjuster", EnvScaleToSmallScale * SmallScaleToBigScale);
+			
+			material.SetMatrix("_TransformationAdjuster",  SmallScaleToBigScale* EnvScaleToSmallScale);//SWAPPED THESE
 
 			material.SetBuffer("WATriVertexPositionBuffer", triVertexPositionBuffer[WRITE]);
 			Graphics.SetRandomWriteTarget(7, triVertexPositionBuffer[WRITE], false);

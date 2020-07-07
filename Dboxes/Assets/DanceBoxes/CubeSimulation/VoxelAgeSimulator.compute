@@ -8,6 +8,7 @@ RWStructuredBuffer<float> WCubeAges;
 
 float _DeltaTime;
 
+int _Gravity;
 
 bool CheckCoordValid(int3 coords)
 {
@@ -35,7 +36,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 	float newage = RNewCubeAges[index];
 
 
-	float oldage = SafeGetOldAge(coords + int3(0, 0, 0) ) - _DeltaTime;
+	float oldage = SafeGetOldAge(coords + int3(0, _Gravity, 0) ) - _DeltaTime;
 
 	WCubeAges[index] = saturate(saturate(oldage) + saturate(newage));
 }

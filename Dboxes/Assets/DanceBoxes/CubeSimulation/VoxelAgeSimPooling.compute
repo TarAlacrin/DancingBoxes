@@ -9,7 +9,7 @@ StructuredBuffer<float> ROldCubeAges;
 RWStructuredBuffer<float> WCubeAges;
 
 float _DeltaTime;
-
+int _Gravity;
 
 float CheckCoordValid(int3 coords)
 {
@@ -48,9 +48,16 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
 	float oldage = SafeGetOldAge(coords);
 
-	int3 elevatedCoords = coords + int3(0, 1, 0);
+	int3 elevatedCoords = coords + int3(0, _Gravity, 0);
+
 
 	float elevatedAge = SafeGetOldAge(elevatedCoords);
+	
+	if (coords.y <= 0)
+	{
+		float pooledage = ageFromPooling(coords)-_DeltaTime;
+		elevatedAge = max(pooledage,elevatedAge);
+	}
 
 	oldage = /*0.5*oldage + */ elevatedAge - _DeltaTime;//lerp(oldage, elevatedAge - _DeltaTime, 0.5);
 

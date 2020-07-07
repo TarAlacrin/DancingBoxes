@@ -1,0 +1,1 @@
+открываем Shustruj_animation_02 и подт€гиваем реф     shustrilo4_6 - реф

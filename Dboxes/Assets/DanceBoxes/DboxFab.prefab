@@ -51,7 +51,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   singleDimensionCount: 96
   sizeAdjuster: {fileID: 0}
-  captureFrametime: 0
+  environmentBoxTransform: {fileID: 0}
+  captureFrametime: 10
+  burnTransform: {fileID: 0}
 --- !u!114 &7669725547519342818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,10 +157,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9dcf6ac63e95c0488a48c0054886976, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DecaySpeed: 3
-  voxelAgeRecipientObject: {fileID: 7425008207380600083}
+  decaySpeed: 5
+  gravity: 0
   cubeAgeSimulationShader: {fileID: 7200000, guid: b7293841e187a824aaa7bc91547948f2,
     type: 3}
+  voxelAgeRecipientObject: {fileID: 7425008207380600083}
 --- !u!1 &7425008207906996562
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,6 +218,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -226,6 +230,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -308,8 +313,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 0
-  voxelAgeRecipientObject: {fileID: 7425008207380600083}
   voxelAgeGenerator: {fileID: 7200000, guid: 3ee3cf745298f0d41ba97b53910ef2d7, type: 3}
+  voxelAgeRecipientObject: {fileID: 7425008207380600083}
 --- !u!1 &7425008209220188530
 GameObject:
   m_ObjectHideFlags: 0

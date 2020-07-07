@@ -6,7 +6,8 @@ namespace DanceBoxes
 {
 	public class VoxelAgeSimulationHandler : MonoBehaviour, IWantVoxelAges
 	{
-		public float DecaySpeed = 5f;
+		public float decaySpeed = 5f;
+		public int gravity = 0;
 		public const int READ = 1;
 		public const int WRITE = 0;
 
@@ -43,7 +44,8 @@ namespace DanceBoxes
 
 			cubeAgeSimulationShader.SetVector("_Dimensions", DanceBoxManager.inst.voxelDimensions4);
 			cubeAgeSimulationShader.SetVector("_InvDimensions", DanceBoxManager.inst.inverseVoxelDimensions4);
-			cubeAgeSimulationShader.SetFloat("_DeltaTime", Time.deltaTime* DecaySpeed);
+			cubeAgeSimulationShader.SetFloat("_DeltaTime", Time.deltaTime* decaySpeed);
+			cubeAgeSimulationShader.SetInt("_Gravity", gravity);
 
 			cubeAgeSimulationShader.SetBuffer(caskernal, "ROldCubeAges", voxelAgeBuffer[READ]);
 			cubeAgeSimulationShader.SetBuffer(caskernal, "RNewCubeAges", voxelAgeStatesREAD);

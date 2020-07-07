@@ -16,10 +16,11 @@ namespace DanceBoxes
 		[Space]
 		public Transform sizeAdjuster = null;
 		public Transform environmentBoxTransform =null;
+		//public Transform environmentBoxTransformDelayed = null;
 
 
-		public int captureFrametime = 20;
-
+		public int captureFrametime = 00;
+		public float caputreDeltaTime = 0.5f;
 		[Space]
 		public Transform burnTransform;
 
@@ -128,7 +129,10 @@ namespace DanceBoxes
 			//Debug.Log("sizeOfVOXEL:" + sizeOfVoxelData + " SIZE OF QUAD?:" + sizeOfQuadData + " sizeofflot: " + sizeof(float));
 			DanceBoxManager.inst = this;
 			if(captureFrametime >0)
-			Time.captureFramerate = captureFrametime;
+				Time.captureFramerate = captureFrametime;
+
+			if (caputreDeltaTime > 0)
+				Time.captureDeltaTime = caputreDeltaTime;
 		}
 
 		public int GetThreadNumbers(int inDesiredCount, int groupSize = threadGroupSize)

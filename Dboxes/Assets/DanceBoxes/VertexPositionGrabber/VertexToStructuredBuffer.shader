@@ -53,10 +53,10 @@ Pass
 			v2g vert (APPDATA IN)
             {
 				v2g vs;
-				vs.worldPos = float4(mul(unity_ObjectToWorld, IN.vertex).xyz, IN.id);
-				vs.worldPos = mul(_TransformationAdjuster, vs.worldPos).xyzw;
+				vs.worldPos = float4(mul(unity_ObjectToWorld, IN.vertex).xyz, 1);
+				vs.worldPos = mul(_TransformationAdjuster,vs.worldPos).xyzw;
 
-
+				vs.worldPos.w = IN.id;
 				vs.pos = UnityObjectToClipPos(IN.vertex);
 				vs.uv = IN.uv;
 				vs.col = IN.col;

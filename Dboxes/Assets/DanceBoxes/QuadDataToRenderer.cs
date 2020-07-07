@@ -44,9 +44,9 @@ namespace DanceBoxes
 
 				Matrix4x4 SmallScaleToEnvScale = Matrix4x4.identity;
 				if (DanceBoxManager.inst.environmentBoxTransform != null)
-					SmallScaleToEnvScale = DanceBoxManager.inst.environmentBoxTransform.localToWorldMatrix;
+					SmallScaleToEnvScale = DanceBoxManager.inst.environmentBoxTransform.localToWorldMatrix;//tried using the delayed version here but couldn't get it to sync. I dont understand quite why though
 
-				Matrix4x4 final4x4 = BigScaleToSmallScale*SmallScaleToEnvScale;
+				Matrix4x4 final4x4 = SmallScaleToEnvScale*BigScaleToSmallScale;
 
 				material.SetMatrix("_TransformationMatrix", final4x4);
 
@@ -54,7 +54,7 @@ namespace DanceBoxes
 					
 				_props.SetBuffer("_Data", quadDataBuffer[READ]);
 
-				Matrix4x4 cameraToBurn =  DanceBoxManager.inst.burnTransform.worldToLocalMatrix;//first matrix to multiply goes to teh left
+				Matrix4x4 cameraToBurn =  DanceBoxManager.inst.burnTransform.worldToLocalMatrix;
 
 
 				_props.SetMatrix("_BurnMatrix", cameraToBurn);
