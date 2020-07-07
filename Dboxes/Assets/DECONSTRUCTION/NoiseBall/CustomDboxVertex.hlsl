@@ -1,3 +1,5 @@
+//Shouts out to keijiro takahashi for his noise ball 4 repository showing how vert-fragment shaders can be integrated into unity's high def render pipeline properly
+
 #include "SimplexNoise3D.hlsl"
 
 uint _TriangleCount;
@@ -44,8 +46,6 @@ PackedVaryingsType CustomVertPacker(float3 posws, float3 normws, float4 uvposage
 	// Imitate a common vertex input.
 	AttributesMesh am;
 
-
-
 	float3 posPostTrans = mul(_TransformationMatrix, float4(posws, 1)).xyz;
 	float3 nrmPostTrans = mul(_TransformationMatrix, float4(normws, 0)).xyz;
 
@@ -88,12 +88,14 @@ struct inputData {
 
 StructuredBuffer< inputData> _Data;
 
+
+
+
 [maxvertexcount(4)]
 void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 {
-	float3 posi = _Data[IN[0].vertexID].position;  //float3(fmod(IN[0].vertexID, 5), fmod(floor(float(IN[0].vertexID)*0.2), 5), floor(float(IN[0].vertexID)*0.04));
+	float3 posi = _Data[IN[0].vertexID].position;  //need to test this, its probably not very performant to keep looking up the value in the _Data array
 	float3 norm = normalize(_Data[IN[0].vertexID].normal);
-	//IN[0].vertexID *= 3;
 
 	uint dim = 96;
 	uint seed = posi.x + posi.y * dim + posi.z * dim *dim;//IN[0].vertexID * 881;
@@ -107,7 +109,7 @@ void Geom(point v2g IN[1], inout TriangleStream<PackedVaryingsType> outStream)
 	float3 tangent = right*0.5f;
 
 
-	PackedVaryingsType pvtin = CustomVertPacker(posi+tangent -binormal, norm, float4(1,0, _Data[IN[0].vertexID].age, rand));// OldVertPacker(IN[0]);
+	PackedVaryingsType pvtin = CustomVertPacker(posi+tangent -binormal, norm, float4(1,0, _Data[IN[0].vertexID].age, rand));
 	outStream.Append(pvtin);
 	pvtin = CustomVertPacker(posi + tangent + binormal, norm, float4(1, 1, _Data[IN[0].vertexID].age, rand));
 	outStream.Append(pvtin);

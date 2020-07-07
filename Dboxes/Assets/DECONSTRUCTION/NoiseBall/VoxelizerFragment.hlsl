@@ -1,4 +1,5 @@
 // Voxelizer effect fragment shader
+// the base of this code
 // https://github.com/keijiro/TestbedHDRP
 
 half4 _EmissionHsvm1;
@@ -8,7 +9,7 @@ half3 _LineColor;
 
 float4x4 _BurnMatrix;
 
-half3 KeijroLineEmission(FragInputs input)
+half3 LineEmission(FragInputs input)
 {
     half2 bcc = input.color.rg;
     half em1 = saturate(input.color.b);
@@ -51,14 +52,12 @@ half3 BurnMatrixEmission(FragInputs input)
 
 	float3 color = _EmissionHsvm1 * falloff;
 
-	//color = lerp(color, _EmissionHsvm2, saturate(falloff * 2 - 1));
-
 	return color;//float3(input.color.b, input.color.b, frac(input.color.b));//lerp(_EmissionHsvm1, _EmissionHsvm2, 0.5);//half3(10, 0, 0);
 }
 
 half3 SelfEmission(FragInputs input)
 {
-	return KeijroLineEmission(input);// BurnMatrixEmission(input);
+	return LineEmission(input);// BurnMatrixEmission(input);
 }
 
 
