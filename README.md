@@ -8,5 +8,5 @@ I'm using Unity's HDRP, which doesn't play well with shaders that aren't written
 The code is a bit of a mess right now, but I'm going to do a full writeup talking about all the hurdles I encountered making this and how I overcame them on my blog at https://samd.biz so I'll clean up my code for that and put a link to that here when its done.
 
 You can see a video of it in action here:
-https://youtu.be/OawOQ55m0x4
+https://youtu.be/_ejSaIwcWTA
 
