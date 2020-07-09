@@ -41,7 +41,6 @@ namespace DanceBoxes
 		void IWantVoxelAges.GiveSwappedVoxelAgeBuffer(ComputeBuffer voxelAgeStatesREAD)
 		{
 			BufferTools.Swap(voxelAgeBuffer);
-
 			cubeAgeSimulationShader.SetVector("_Dimensions", DanceBoxManager.inst.voxelDimensions4);
 			cubeAgeSimulationShader.SetVector("_InvDimensions", DanceBoxManager.inst.inverseVoxelDimensions4);
 			cubeAgeSimulationShader.SetFloat("_DeltaTime", Time.deltaTime* decaySpeed);
