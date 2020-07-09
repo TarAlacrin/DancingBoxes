@@ -1,5 +1,5 @@
-﻿#include "Assets/DanceBoxes/ComputeIncludes.cginc"
-#include "Assets/DanceBoxes/ComputeTriangleIncludesCustom.cginc"
+﻿#include "Assets/DanceBoxes/UtilityScripts/ComputeIncludes.cginc"
+#include "Assets/DanceBoxes/UtilityScripts/ComputeTriangleIncludesCustom.cginc"
 
 #pragma kernel CSRunIntersections
 struct FullTriangleData

@@ -1,7 +1,7 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-#include "Assets/DanceBoxes/ComputeIncludes.cginc"
+#include "Assets/DanceBoxes/UtilityScripts/ComputeIncludes.cginc"
 
 int _OneUnitSize; //ind0
 float _FillValue; //ind1

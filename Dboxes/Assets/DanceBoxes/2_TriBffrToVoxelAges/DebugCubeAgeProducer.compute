@@ -1,6 +1,6 @@
 ﻿// Each #kernel tells which fu nction to compile; you can have many kernels
 #pragma kernel CSMain
-#include "Assets/DanceBoxes/ComputeIncludes.cginc"
+#include "Assets/DanceBoxes/UtilityScripts/ComputeIncludes.cginc"
 
 RWStructuredBuffer<float> WVoxelAgeBuffer;
 float _Time;

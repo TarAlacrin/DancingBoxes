@@ -1,5 +1,5 @@
 ﻿#pragma kernel CSMain
-#include "Assets/DanceBoxes/ComputeIncludes.cginc"
+#include "Assets/DanceBoxes/UtilityScripts/ComputeIncludes.cginc"
 
 
 StructuredBuffer<float> RNewCubeAges;
